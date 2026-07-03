@@ -1,0 +1,323 @@
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap');
+@import 'tailwindcss';
+
+@theme inline {
+  --font-sans: 'Geist', 'Segoe UI', sans-serif;
+  --font-mono: 'Geist Mono', 'Cascadia Code', monospace;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+}
+
+:root,
+.light {
+  color-scheme: light;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(0.995 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --grid-line: rgba(15, 23, 42, 0.08);
+  --beam-line: rgba(15, 23, 42, 0.08);
+  --spotlight: rgba(15, 23, 42, 0.08);
+  --aura-1: rgba(15, 23, 42, 0.06);
+  --aura-2: rgba(2, 6, 23, 0.04);
+  --app-start: #f8fafc;
+  --app-mid: #f4f4f5;
+  --app-end: #e4e4e7;
+  --hover-border: rgba(2, 6, 23, 0.18);
+  --hover-shadow: rgba(15, 23, 42, 0.12);
+}
+
+.dark {
+  color-scheme: dark;
+  --background: oklch(0.18 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+  --grid-line: rgba(161, 161, 170, 0.09);
+  --beam-line: rgba(244, 244, 245, 0.06);
+  --spotlight: rgba(255, 255, 255, 0.09);
+  --aura-1: rgba(255, 255, 255, 0.06);
+  --aura-2: rgba(113, 113, 122, 0.08);
+  --app-start: #080808;
+  --app-mid: #101010;
+  --app-end: #141414;
+  --hover-border: rgba(255, 255, 255, 0.16);
+  --hover-shadow: rgba(0, 0, 0, 0.22);
+}
+
+/* Click spark burst — themed with the current primary */
+.click-spark {
+  position: fixed;
+  z-index: 95;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--primary);
+  pointer-events: none;
+  animation: spark-fly 0.55s ease-out forwards;
+}
+
+@keyframes spark-fly {
+  to {
+    transform: translate(var(--dx), var(--dy)) scale(0);
+    opacity: 0;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--background);
+  color: var(--foreground);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+.section-wrap {
+  position: relative;
+}
+
+.section-title {
+  font-size: clamp(1.8rem, 4vw, 2.4rem);
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.section-subtitle {
+  margin-top: 0.5rem;
+  max-width: 44rem;
+  color: color-mix(in oklab, var(--muted-foreground) 86%, transparent);
+}
+
+.app-background {
+  background:
+    radial-gradient(circle at 12% 10%, var(--aura-1), transparent 28%),
+    radial-gradient(circle at 82% 18%, var(--aura-2), transparent 24%),
+    linear-gradient(135deg, var(--app-start) 0%, var(--app-mid) 40%, var(--app-end) 100%);
+}
+
+.cursor-glow {
+  background: color-mix(in oklab, var(--primary) 25%, transparent);
+}
+
+.loader-screen {
+  background: color-mix(in oklab, var(--background) 93%, black 7%);
+}
+
+.loader-dot {
+  background: var(--primary);
+}
+
+.animated-gradient {
+  background-image: linear-gradient(95deg, color-mix(in oklab, var(--primary) 65%, white 35%) 0%, var(--primary) 45%, color-mix(in oklab, var(--primary) 70%, black 30%) 100%);
+  background-size: 200% 200%;
+  animation: gradient-shift 7s ease infinite;
+}
+
+.grid-pattern {
+  background-image:
+    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+  background-size: 40px 40px;
+  mask-image: radial-gradient(circle at center, black 45%, transparent 80%);
+}
+
+.spotlight {
+  background: radial-gradient(circle at 50% 0%, var(--spotlight) 0%, transparent 68%);
+  filter: blur(18px);
+}
+
+.beam-lines {
+  background-image: linear-gradient(120deg, transparent 0%, var(--beam-line) 18%, transparent 36%);
+  background-size: 240% 240%;
+  animation: beam-sweep 14s linear infinite;
+}
+
+.card-hover {
+  transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1), border-color 320ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 320ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.card-hover:hover {
+  border-color: var(--hover-border);
+  transform: translateY(-4px);
+  box-shadow: 0 18px 36px var(--hover-shadow);
+}
+
+.dock-shell {
+  box-shadow: 0 14px 28px -22px rgba(0, 0, 0, 0.35), 0 0 0 1px color-mix(in oklab, var(--border) 82%, transparent);
+}
+
+.dock-item {
+  transition: color 260ms cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 260ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 260ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 260ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.dock-item:hover {
+  color: var(--foreground);
+  background: color-mix(in oklab, var(--accent) 94%, transparent);
+  border-color: color-mix(in oklab, var(--foreground) 12%, var(--border) 88%);
+  box-shadow: 0 10px 20px -14px rgba(0, 0, 0, 0.5), inset 0 1px 0 color-mix(in oklab, white 18%, transparent);
+}
+
+.dock-item-active {
+  color: var(--foreground);
+  background: color-mix(in oklab, var(--accent) 95%, transparent);
+  border-color: color-mix(in oklab, var(--foreground) 16%, var(--border) 84%);
+  box-shadow: 0 8px 16px -14px rgba(0, 0, 0, 0.42), inset 0 1px 0 color-mix(in oklab, white 20%, transparent);
+}
+
+.gradient-border {
+  background: linear-gradient(130deg, color-mix(in oklab, var(--primary) 72%, transparent), color-mix(in oklab, var(--primary) 40%, transparent), color-mix(in oklab, var(--primary) 62%, transparent));
+  background-size: 200% 200%;
+  animation: gradient-shift 9s ease infinite;
+}
+
+.icon-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 2rem;
+  width: 2rem;
+  border-radius: 0.6rem;
+  border: 1px solid var(--border);
+  background: color-mix(in oklab, var(--background) 80%, var(--muted) 20%);
+  color: var(--muted-foreground);
+  transition: all 260ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.icon-link:hover {
+  color: var(--foreground);
+  border-color: color-mix(in oklab, var(--primary) 35%, var(--border) 65%);
+  background: color-mix(in oklab, var(--accent) 75%, transparent);
+}
+  *, *::before, *::after {
+    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 300ms;
+  }
+:where(a, button, input, textarea) {
+  transition-property: color, background-color, border-color, box-shadow, opacity;
+  transition-duration: 260ms;
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card-hover,
+  .dock-item,
+  .icon-link,
+  :where(a, button, input, textarea) {
+    transition: none !important;
+  }
+}
+
+.terminal-cursor {
+  width: 9px;
+  height: 17px;
+  border-radius: 2px;
+  background: color-mix(in oklab, var(--primary) 78%, transparent);
+  animation: cursor-blink 1s steps(1, end) infinite;
+}
+
+.terminal-scroll::-webkit-scrollbar {
+  width: 10px;
+}
+
+.terminal-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.terminal-scroll::-webkit-scrollbar-thumb {
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  background: color-mix(in oklab, var(--muted-foreground) 65%, transparent);
+  background-clip: padding-box;
+}
+
+@keyframes cursor-blink {
+  0%,
+  48% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes beam-sweep {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
+  }
+}
