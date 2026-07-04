@@ -225,7 +225,7 @@ export function WorkPage({ themeColor, onPickColor }) {
           </p>
         </Motion.div>
 
-        <div className="mt-12 grid gap-8 md:grid-cols-2">
+        <div className="mt-12 grid grid-cols-1 gap-8 md:grid-cols-2">
           {visibleProjects.map((project, index) => (
             <BrowserFrame
               key={project.name}

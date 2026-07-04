@@ -56,7 +56,7 @@ export function MusicPlayer() {
   }
 
   return (
-    <Motion.div drag dragMomentum={false} whileDrag={{ scale: 1.05 }} className="fixed bottom-4 left-4 z-40 cursor-grab active:cursor-grabbing">
+    <Motion.div drag dragMomentum={false} whileDrag={{ scale: 1.05 }} className="fixed bottom-20 left-4 z-40 cursor-grab active:cursor-grabbing sm:bottom-4">
       <audio ref={audioRef} src={track.src} onTimeUpdate={onTimeUpdate} onEnded={nextTrack} preload="none" />
 
       {/* ponytail: no AnimatePresence — StrictMode + framer eats the exit unmount */}

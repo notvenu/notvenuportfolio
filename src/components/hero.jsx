@@ -61,13 +61,18 @@ export function Hero({ onOpenTerminal }) {
           className="max-w-4xl text-4xl font-semibold leading-tight text-foreground sm:text-6xl"
         >
           {developer.heroHeading}
-          <span className="ml-2 inline-block rounded-lg bg-foreground px-2 text-background">
-            {developer.heroHighlight.split('').map((char, index) => (
+          <span className="ml-2 box-decoration-clone rounded-lg bg-foreground px-2 text-background">
+            {developer.heroHighlight.split(' ').map((word, wordIndex, words) => (
+              <span key={wordIndex} className="inline-block whitespace-nowrap">
+                {word.split('').map((char, index) => (
               <span
                 key={index}
                 className="inline-block transition-transform duration-200 ease-out hover:-translate-y-1.5 hover:rotate-6"
               >
                 {char === ' ' ? ' ' : char}
+              </span>
+                ))}
+                {wordIndex < words.length - 1 && ' '}
               </span>
             ))}
           </span>
