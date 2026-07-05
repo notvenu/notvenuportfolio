@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react'
 import { motion as Motion } from 'framer-motion'
 import { About } from '../components/about'
-import { Hackathons } from '../components/hackathons'
 import { Contact } from '../components/contact'
-import { Experience } from '../components/experience'
+import { Playground } from '../components/playground'
 import { Hero } from '../components/hero'
 import { Navbar } from '../components/navbar'
 import { Projects } from '../components/projects'
@@ -60,8 +59,7 @@ export function HomePage({ themeColor, onPickColor }) {
         <About />
         <Skills />
         <Projects />
-        <Experience />
-        <Hackathons />
+        <Playground />
         <Contact />
       </main>
 

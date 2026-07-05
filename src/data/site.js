@@ -1,15 +1,15 @@
-export const developer = {
+﻿export const developer = {
   name: 'Venu K',
   role: 'Full Stack Developer | AI Builder',
   roles: ['Developer', 'AI Builder', 'System Thinker', 'Product Engineer'],
   heroHeading: 'Building resilient products at the intersection of',
   heroHighlight: 'design, systems, and AI.',
   bio: 'I design and ship high-performance product experiences with clean architecture, observability, and delightful interactions.',
-  about: 'At the end of 2022, I quit my role as a software engineer to go full-time into building and scaling my own SaaS businesses. In the past, I pursued a double degree in computer science and business, interned at big tech companies, and competed in 20+ hackathons. I now focus on shipping robust digital products with speed and craft.',
+  about: 'I am a developer who learns by building - shipping side projects, experimenting with AI tooling, and polishing the details most people skip. Right now I am focused on growing my skills, contributing to open source, and turning ideas into products people actually use.',
   aboutHighlights: [
-    'I pursued a double degree in computer science and business',
-    'interned at big tech companies',
-    'competed in 20+ hackathons'
+    'learns by building',
+    'experimenting with AI tooling',
+    'turning ideas into products'
   ],
   contactText: "Want to chat? Just shoot me a dm with a direct question on twitter and I'll respond whenever I can. I will ignore all soliciting.",
   contactLinkText: "with a direct question on twitter",
@@ -24,8 +24,7 @@ export const developer = {
   subtitles: {
     skills: 'Core technologies I use to design, ship, and scale digital products.',
     projects: 'Selected work blending product craft with scalable engineering.',
-    experience: 'A timeline of impact across product, platform, and team systems.',
-    hackathons: 'Building fast, breaking things, and competing under pressure.'
+    playground: 'A tiny arcade instead of resume filler - squash bugs, test your reflexes, match pairs, outsmart a tiny bot.'
   }
 }
 
@@ -86,53 +85,3 @@ export const projects = [
   },
 ]
 
-export const experience = [
-  {
-    company: 'Nova Systems',
-    role: 'Senior Product Engineer',
-    duration: '2023 - Present',
-    description:
-      'Lead frontend architecture for a data-heavy B2B platform, improving interaction latency and developer velocity.',
-  },
-  {
-    company: 'ScaleForge',
-    role: 'Full Stack Engineer',
-    duration: '2021 - 2023',
-    description:
-      'Built AI-backed workflows and CI automation pipelines used across product and platform teams.',
-  },
-  {
-    company: 'Studio Orbit',
-    role: 'Frontend Engineer',
-    duration: '2019 - 2021',
-    description:
-      'Delivered polished web experiences with design system foundations and robust frontend testing.',
-  },
-]
-
-export const hackathons = [
-  {
-    name: 'Global AI Hackathon',
-    project: 'Smart Legal Contract Analyzer',
-    description: 'Built an AI agent that scans legal contracts for loopholes and summarizes terms.',
-    link: '#',
-    date: 'Oct 2025',
-    award: '1st Place Winner'
-  },
-  {
-    name: 'Web3 Build & Scale',
-    project: 'Decentralized Identity Vault',
-    description: 'Developed a privacy-first identity management wallet using zero-knowledge proofs.',
-    link: '#',
-    date: 'Jul 2025',
-    award: 'Best Technical Execution'
-  },
-  {
-    name: 'Hack The Future',
-    project: 'Eco-route Planner',
-    description: 'A navigation system that calculates the most carbon-efficient route for deliveries.',
-    link: '#',
-    date: 'Mar 2025',
-    award: 'Sustainability Track Finalist'
-  },
-]

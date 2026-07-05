@@ -16,43 +16,20 @@ function getGitHubUsername(url) {
   return match?.[1] ?? ''
 }
 
-function computeCurrentStreak(events) {
-  const activeDays = new Set(
-    events
-      .map((event) => event?.created_at?.slice(0, 10))
-      .filter(Boolean),
-  )
-
-  const today = new Date()
-  const utcToday = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate()))
-
-  let cursor = utcToday
+// Streak from the real contribution calendar (ascending daily counts)
+function computeStreak(days) {
+  let i = days.length - 1
+  if (i >= 0 && days[i].count === 0) i -= 1 // today may have no commits yet
   let streak = 0
-
-  const toYmd = (date) => date.toISOString().slice(0, 10)
-
-  if (!activeDays.has(toYmd(cursor))) {
-    cursor = new Date(cursor)
-    cursor.setUTCDate(cursor.getUTCDate() - 1)
-  }
-
-  while (activeDays.has(toYmd(cursor))) {
+  while (i >= 0 && days[i].count > 0) {
     streak += 1
-    cursor = new Date(cursor)
-    cursor.setUTCDate(cursor.getUTCDate() - 1)
+    i -= 1
   }
-
   return streak
 }
 
-function computeRecentContributions(events) {
-  return events.reduce((total, event) => {
-    if (event?.type === 'PushEvent') {
-      return total + (event?.payload?.size ?? 1)
-    }
-    return total + 1
-  }, 0)
-}
+const CACHE_KEY = 'gh-stats-v2'
+const CACHE_TTL = 60 * 60 * 1000 // 1h — dodges the 60/hr anonymous API limit
 
 export function About() {
   const [liveStats, setLiveStats] = useState(githubStats)
@@ -63,19 +40,27 @@ export function About() {
       return
     }
 
+    const cached = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null')
+    if (cached && Date.now() - cached.at < CACHE_TTL) {
+      setLiveStats(cached.stats)
+      return
+    }
+
     const fetchStats = async () => {
       try {
-        const userResponse = await fetch(`https://api.github.com/users/${username}`)
-        if (!userResponse.ok) {
-          return
-        }
-        const user = await userResponse.json()
+        const [user, contrib] = await Promise.all([
+          fetch(`https://api.github.com/users/${username}`).then((r) => (r.ok ? r.json() : Promise.reject(new Error('user fetch failed')))),
+          // real contribution calendar (public mirror of the profile graph)
+          fetch(`https://github-contributions-api.jogruber.de/v4/${username}?y=last`)
+            .then((r) => (r.ok ? r.json() : null))
+            .catch(() => null),
+        ])
 
         let page = 1
         let hasMore = true
         let stars = 0
 
-        while (hasMore) {
+        while (hasMore && page <= 5) {
           const reposResponse = await fetch(`https://api.github.com/users/${username}/repos?per_page=100&page=${page}`)
           if (!reposResponse.ok) {
             break
@@ -88,26 +73,18 @@ export function About() {
           page += 1
         }
 
-        const eventPages = [1, 2, 3]
-        const eventBatches = await Promise.all(
-          eventPages.map(async (eventPage) => {
-            const response = await fetch(`https://api.github.com/users/${username}/events/public?per_page=100&page=${eventPage}`)
-            if (!response.ok) {
-              return []
-            }
-            return response.json()
-          }),
-        )
+        const days = contrib?.contributions ?? []
+        const contributions = contrib?.total?.lastYear ?? days.reduce((total, day) => total + day.count, 0)
 
-        const streakDays = computeCurrentStreak(eventBatches.flat())
-        const contributions = computeRecentContributions(eventBatches.flat())
-
-        setLiveStats([
+        const stats = [
           { label: 'Public Repos', value: formatCompact(user.public_repos ?? 0) },
           { label: 'OSS Stars', value: formatCompact(stars) },
-          { label: 'Current Streak', value: `${streakDays} days` },
           { label: 'Contributions', value: formatCompact(contributions) },
-        ])
+          { label: 'Current Streak', value: `${computeStreak(days)} days` },
+        ]
+
+        setLiveStats(stats)
+        localStorage.setItem(CACHE_KEY, JSON.stringify({ at: Date.now(), stats }))
       } catch {
         // Fall back to static stats when API is unavailable.
       }
