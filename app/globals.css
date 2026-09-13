@@ -1,0 +1,91 @@
+@import "tailwindcss";
+
+@theme {
+  /* Dark-only palette. Locked at page level, no section inverts. */
+  --color-ink: #0b0b0c;
+  --color-ink-2: #101012;
+  --color-ink-3: #16161a;
+  --color-paper: #ece9e3;
+  --color-paper-dim: #8e8a83;
+  --color-paper-faint: #57544f;
+  --color-accent: #e04e2e;
+  --color-accent-dim: #8c3520;
+
+  --radius-card: 4px;
+
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, "SF Mono", Menlo, monospace;
+  --font-jp: "Hiragino Mincho ProN", "Yu Mincho", "Yu Gothic", "Meiryo",
+    "Noto Sans JP", sans-serif;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background: var(--color-ink);
+    color: var(--color-paper);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background: var(--color-accent);
+    color: #fff;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+  }
+
+  /* Lenis owns the scroll; opt out of native smooth to avoid double-easing. */
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+}
+
+@layer utilities {
+  /* Halftone: the one manga-derived texture on the page. Fixed + inert so it
+     never forces a repaint on scrolling containers. */
+  .halftone {
+    background-image: radial-gradient(
+      var(--color-paper-faint) 0.6px,
+      transparent 0.6px
+    );
+    background-size: 6px 6px;
+  }
+
+  .rule {
+    border-top: 1px solid color-mix(in srgb, var(--color-paper) 10%, transparent);
+  }
+
+  .text-balance-head {
+    text-wrap: balance;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

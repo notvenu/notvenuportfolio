@@ -1,12 +1,32 @@
-# notvenu.github.io
+# notvenu.dev
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Personal portfolio. Next.js 15 (App Router), TypeScript, Tailwind v4,
+react-three-fiber, Motion, Lenis.
 
-Currently, two official plugins are available:
+```bash
+npm install
+npm run dev     # http://localhost:3000
+npm run build
+```
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Editing content
 
-## Expanding the ESLint configuration
+All copy and data live in `data/`, so nothing below needs a component change:
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+| File               | What it holds                                            |
+| ------------------ | -------------------------------------------------------- |
+| `data/site.ts`     | Name, contact details, socials, education, LeetCode count |
+| `data/projects.ts` | The project list, stack chips, links, screenshots         |
+| `data/stack.ts`    | Skill groups, plus the nodes and edges of the hero graph  |
+| `data/reading.ts`  | The bookshelf. Placeholder titles, swap for real ones     |
+| `data/services.ts` | Freelance offer and the "how I work" points               |
+
+Project screenshots go in `public/shots/` and are referenced by the `shot`
+field in `data/projects.ts`.
+
+## Notes
+
+- The page is dark only, on purpose. Tokens live in `app/globals.css`.
+- The hero graph is `next/dynamic`, so three.js never blocks first paint.
+- Everything animated degrades under `prefers-reduced-motion`: Lenis is
+  skipped, reveals render instantly, and the graph renders as a static frame.
