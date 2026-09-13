@@ -7,7 +7,13 @@ react-three-fiber, Motion, Lenis.
 npm install
 npm run dev     # http://localhost:3000
 npm run build
+npm run lint
+npm test        # node's runner, no framework
 ```
+
+`/playground` is a Pong game, linked from the footer. You are the vermillion
+paddle, the machine is cyan, and the ball is a packet, matching the rest of
+the site.
 
 ## Editing content
 

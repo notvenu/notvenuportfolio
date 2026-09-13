@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { GithubLogo, LinkedinLogo, Code, DownloadSimple } from "@phosphor-icons/react/dist/ssr";
 import { site } from "@/data/site";
 import { Reveal } from "@/components/reveal";
@@ -55,9 +56,17 @@ export function Contact() {
             ))}
           </ul>
 
-          <p className="font-mono text-[11px] tracking-[0.12em] text-paper-faint uppercase">
-            {site.location}
-          </p>
+          <div className="flex items-center gap-6">
+            <Link
+              href="/playground"
+              className="font-mono text-[11px] tracking-[0.12em] text-paper-faint uppercase transition-colors hover:text-cold"
+            >
+              Pong
+            </Link>
+            <p className="font-mono text-[11px] tracking-[0.12em] text-paper-faint uppercase">
+              {site.location}
+            </p>
+          </div>
         </div>
       </div>
     </footer>
