@@ -1,4 +1,4 @@
-import { GithubLogo, LinkedinLogo, Code } from "@phosphor-icons/react/dist/ssr";
+import { GithubLogo, LinkedinLogo, Code, DownloadSimple } from "@phosphor-icons/react/dist/ssr";
 import { site } from "@/data/site";
 import { Reveal } from "@/components/reveal";
 
@@ -16,7 +16,7 @@ export function Contact() {
         className="halftone pointer-events-none absolute inset-x-0 bottom-0 h-64 opacity-40 [mask-image:linear-gradient(to_top,#000,transparent)]"
       />
 
-      <div className="relative mx-auto max-w-[1400px] px-5 py-24 md:px-10 md:py-32">
+      <div className="relative mx-auto max-w-[1400px] px-5 py-24 md:px-10 md:py-32 lg:px-[104px]">
         <Reveal>
           <p className="max-w-[30ch] text-[1.9rem] leading-[1.12] font-medium tracking-[-0.03em] sm:text-[2.6rem]">
             Hiring, or have something to build?
@@ -28,6 +28,14 @@ export function Contact() {
             {site.email}
           </a>
           <p className="mt-4 font-mono text-[13px] text-paper-dim">{site.phone}</p>
+
+          <a
+            href={site.resume}
+            className="group mt-8 inline-flex items-center gap-2 rounded-[4px] border border-paper/25 px-5 py-3 text-[14px] text-paper transition-colors hover:border-cold hover:text-cold"
+          >
+            <DownloadSimple size={16} weight="bold" />
+            Download resume
+          </a>
         </Reveal>
 
         <div className="rule mt-16 flex flex-col gap-6 pt-8 sm:flex-row sm:items-center sm:justify-between">

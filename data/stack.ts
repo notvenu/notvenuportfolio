@@ -36,23 +36,27 @@ export const stackGroups = [
 
 export type PipeNode = { id: string; label: string; pos: [number, number, number] };
 
-/** Nodes for the hero request-pipeline graph. Positions are hand placed so the
- *  flow reads left to right, the way a request actually travels. */
+/** The hero graph spans the whole viewport now, so the nodes are spread wide
+ *  and weighted to the right, clear of the headline scrim. */
 export const pipeNodes: PipeNode[] = [
-  { id: "client", label: "client", pos: [-4.3, 1.0, 0.0] },
-  { id: "api", label: "express", pos: [-1.5, 0.1, 0.6] },
-  { id: "auth", label: "jwt", pos: [-2.1, 2.4, -0.9] },
-  { id: "db", label: "postgres", pos: [1.7, 1.5, -0.4] },
-  { id: "mongo", label: "mongo", pos: [1.2, -1.5, 0.9] },
-  { id: "pay", label: "razorpay", pos: [4.2, 0.5, -0.2] },
-  { id: "cdn", label: "cloudinary", pos: [3.7, -2.0, 0.7] },
+  { id: "client", label: "client", pos: [-7.4, 2.6, 0.4] },
+  { id: "edge", label: "vercel edge", pos: [-4.6, -2.4, -0.6] },
+  { id: "api", label: "express", pos: [-1.2, 0.4, 0.8] },
+  { id: "auth", label: "jwt", pos: [-1.9, 3.4, -1.2] },
+  { id: "db", label: "postgres", pos: [2.6, 2.5, -0.5] },
+  { id: "mongo", label: "mongo", pos: [1.9, -2.6, 1.0] },
+  { id: "pay", label: "razorpay", pos: [6.2, 1.1, -0.3] },
+  { id: "cdn", label: "cloudinary", pos: [5.4, -3.2, 0.8] },
+  { id: "webhook", label: "webhook", pos: [7.6, -1.0, -1.1] },
 ];
 
 export const pipeEdges: [string, string][] = [
   ["client", "api"],
+  ["edge", "api"],
   ["api", "auth"],
   ["api", "db"],
   ["api", "mongo"],
   ["db", "pay"],
   ["mongo", "cdn"],
+  ["pay", "webhook"],
 ];

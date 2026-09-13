@@ -1,22 +1,28 @@
 @import "tailwindcss";
 
 @theme {
-  /* Dark-only palette. Locked at page level, no section inverts. */
-  --color-ink: #0b0b0c;
-  --color-ink-2: #101012;
-  --color-ink-3: #16161a;
-  --color-paper: #ece9e3;
-  --color-paper-dim: #8e8a83;
-  --color-paper-faint: #57544f;
+  /* Dark-only. Two accents, and the split is semantic, not decorative:
+     vermillion is Venu, cyan is the machine. Never swap them. */
+  --color-ink: #08080a;
+  --color-ink-2: #0d0d10;
+  --color-ink-3: #141419;
+  --color-paper: #efece6;
+  --color-paper-dim: #918d86;
+  --color-paper-faint: #5a5751;
   --color-accent: #e04e2e;
   --color-accent-dim: #8c3520;
+  --color-cold: #35c4d6;
+  --color-cold-dim: #1b6b76;
 
   --radius-card: 4px;
 
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, "SF Mono", Menlo, monospace;
-  --font-jp: "Hiragino Mincho ProN", "Yu Mincho", "Yu Gothic", "Meiryo",
-    "Noto Sans JP", sans-serif;
+  --font-display: var(--font-anton), "Arial Narrow", Impact, sans-serif;
+  /* System Japanese. A webfont for a dozen decorative glyphs is not worth
+     the megabyte; every platform ships a good Mincho or Gothic. */
+  --font-jp: "Hiragino Mincho ProN", "Yu Mincho", "YuMincho", "Noto Serif JP",
+    "Meiryo", serif;
 
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -45,11 +51,10 @@
   }
 
   :focus-visible {
-    outline: 2px solid var(--color-accent);
+    outline: 2px solid var(--color-cold);
     outline-offset: 3px;
   }
 
-  /* Lenis owns the scroll; opt out of native smooth to avoid double-easing. */
   html.lenis,
   html.lenis body {
     height: auto;
@@ -60,18 +65,43 @@
 }
 
 @layer utilities {
-  /* Halftone: the one manga-derived texture on the page. Fixed + inert so it
-     never forces a repaint on scrolling containers. */
+  /* Halftone, now at a weight you can actually see. Fixed or inert only,
+     never on a scrolling container. */
   .halftone {
     background-image: radial-gradient(
-      var(--color-paper-faint) 0.6px,
-      transparent 0.6px
+      currentColor 0.9px,
+      transparent 1px
     );
-    background-size: 6px 6px;
+    background-size: 5px 5px;
   }
 
-  .rule {
-    border-top: 1px solid color-mix(in srgb, var(--color-paper) 10%, transparent);
+  .halftone-lg {
+    background-image: radial-gradient(currentColor 1.7px, transparent 1.8px);
+    background-size: 9px 9px;
+  }
+
+  /* Radiating speed lines. One moment on the page, not wallpaper. */
+  .speedlines {
+    background: repeating-conic-gradient(
+      from 0deg at 50% 50%,
+      currentColor 0deg 0.35deg,
+      transparent 0.35deg 2.2deg
+    );
+  }
+
+  /* Manga gutter. The page cuts, it does not fade. */
+  .cut-down {
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 3.5vw), 0 100%);
+  }
+  .cut-up {
+    clip-path: polygon(0 3.5vw, 100% 0, 100% 100%, 0 100%);
+  }
+
+  .tategaki {
+    /* writing-mode has no effect on an inline box, so this must be a block. */
+    display: block;
+    writing-mode: vertical-rl;
+    text-orientation: upright;
   }
 
   .text-balance-head {

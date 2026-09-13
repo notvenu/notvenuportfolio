@@ -4,7 +4,7 @@ import { Reveal } from "@/components/reveal";
 
 export function About() {
   return (
-    <section id="about" className="mx-auto max-w-[1400px] px-5 py-24 md:px-10 md:py-32">
+    <section id="about" className="mx-auto max-w-[1400px] px-5 py-24 md:px-10 md:py-32 lg:px-[104px]">
       <SectionHead title="How I got here." kanji="経歴" />
 
       <Reveal className="mt-12 max-w-[62ch] space-y-6 text-[16px] leading-[1.75] text-paper-dim">

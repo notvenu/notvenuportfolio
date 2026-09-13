@@ -1,4 +1,6 @@
 import { Nav } from "@/components/nav";
+import { RequestRail } from "@/components/request-rail";
+import { PanelCut } from "@/components/panel-cut";
 import { Hero } from "@/components/sections/hero";
 import { Facts } from "@/components/sections/facts";
 import { Work } from "@/components/sections/work";
@@ -12,12 +14,16 @@ export default function Page() {
   return (
     <>
       <Nav />
+      <RequestRail />
       <main>
         <Hero />
         <Facts />
+        <PanelCut />
         <Work />
+        <PanelCut flip />
         <Stack />
         <About />
+        <PanelCut />
         <Reading />
         <Hire />
       </main>

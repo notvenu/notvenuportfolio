@@ -10,6 +10,8 @@ export const site = {
   phone: "+91 7981669328",
   location: "Visakhapatnam, India",
   availability: "Open to internships, full-time roles and freelance work",
+  /** Drop the PDF at public/ under exactly this name for the link to resolve. */
+  resume: "/venu-bhargava-jishith-k-resume.pdf",
   socials: {
     github: "https://github.com/notvenu",
     linkedin: "https://linkedin.com/in/venu-kasibhatla",

@@ -12,7 +12,7 @@ const links = [
 export function Nav() {
   return (
     <header className="fixed inset-x-0 top-0 z-40 h-16 border-b border-paper/10 bg-ink/80 backdrop-blur-md">
-      <nav className="mx-auto flex h-full max-w-[1400px] items-center justify-between gap-6 px-5 md:px-10">
+      <nav className="mx-auto flex h-full max-w-[1400px] items-center justify-between gap-6 px-5 md:px-10 lg:px-[104px]">
         <Link
           href="#top"
           className="font-mono text-[13px] tracking-[0.14em] text-paper transition-colors hover:text-accent"

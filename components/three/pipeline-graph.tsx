@@ -10,7 +10,8 @@ import { pipeEdges, pipeNodes } from "@/data/stack";
 import { usePrefersReducedMotion } from "@/lib/use-reduced-motion";
 
 const ACCENT = "#e04e2e";
-const PAPER = "#ece9e3";
+const COLD = "#35c4d6";
+const PAPER = "#efece6";
 
 const positions = new Map(
   pipeNodes.map((n) => [n.id, new THREE.Vector3(...n.pos)]),
@@ -74,8 +75,8 @@ function Packet({ from, to, offset, reduce }: {
 
   return (
     <mesh ref={ref}>
-      <sphereGeometry args={[0.055, 8, 8]} />
-      <meshBasicMaterial color={ACCENT} transparent />
+      <sphereGeometry args={[0.062, 8, 8]} />
+      <meshBasicMaterial color={COLD} transparent blending={THREE.AdditiveBlending} />
     </mesh>
   );
 }
@@ -109,17 +110,18 @@ function Scene({ reduce }: { reduce: boolean }) {
   });
 
   // Fit the graph to narrow viewports instead of letting it crop.
-  const scale = size.width < 768 ? Math.max(0.6, viewport.width / 12) : 1.0;
+  // Full bleed: fit the widest node span (about 16 units) to the viewport.
+  const scale = Math.min(1.0, Math.max(0.48, viewport.width / 21));
 
   return (
-    <group ref={group} scale={scale}>
+    <group ref={group} scale={scale} position={[size.width < 1024 ? 0 : 0.7, 0, 0]}>
       {edges.map((e, i) => (
         <Line
           key={i}
           points={[e.a, e.b]}
           color={PAPER}
           transparent
-          opacity={0.16}
+          opacity={0.2}
           lineWidth={1}
         />
       ))}
@@ -141,7 +143,7 @@ export default function PipelineGraph() {
       className="!absolute inset-0"
       dpr={[1, 1.75]}
       gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
-      camera={{ position: [0, 0, 13], fov: 44 }}
+      camera={{ position: [0, 0, 15], fov: 46 }}
       frameloop={reduce ? "demand" : "always"}
     >
       <Scene reduce={reduce} />

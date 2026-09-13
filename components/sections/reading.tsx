@@ -15,7 +15,7 @@ const statusLabel: Record<string, string> = {
 export function Reading() {
   return (
     <section id="reading" className="border-t border-paper/10 bg-ink-2">
-      <div className="mx-auto max-w-[1400px] px-5 py-24 md:px-10 md:py-32">
+      <div className="mx-auto max-w-[1400px] px-5 py-24 md:px-10 md:py-32 lg:px-[104px]">
         <SectionHead
           title="What I am reading."
           kanji="読書"

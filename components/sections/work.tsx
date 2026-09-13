@@ -75,7 +75,7 @@ export function Work() {
   const [featured, slotify, backend] = projects;
 
   return (
-    <section id="work" className="mx-auto max-w-[1400px] px-5 py-24 md:px-10 md:py-32">
+    <section id="work" className="mx-auto max-w-[1400px] px-5 py-24 md:px-10 md:py-32 lg:px-[104px]">
       <SectionHead
         title="Three things I shipped."
         kanji="作品"

@@ -6,7 +6,7 @@ import { Reveal } from "@/components/reveal";
 
 export function Hire() {
   return (
-    <section id="hire" className="mx-auto max-w-[1400px] px-5 py-24 md:px-10 md:py-32">
+    <section id="hire" className="mx-auto max-w-[1400px] px-5 py-24 md:px-10 md:py-32 lg:px-[104px]">
       <div className="grid gap-14 lg:grid-cols-[1fr_0.85fr] lg:gap-20">
         <div>
           <SectionHead
