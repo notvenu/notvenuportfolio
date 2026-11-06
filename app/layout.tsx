@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Bricolage_Grotesque, Geist_Mono } from "next/font/google";
 import { Providers } from "@/components/motion";
-import { clients, faq, site } from "@/data";
+import { clients, seo, site } from "@/data";
 import "./globals.css";
 
 const sans = Bricolage_Grotesque({ subsets: ["latin"], variable: "--sans" });
@@ -9,23 +9,38 @@ const mono = Geist_Mono({ subsets: ["latin"], variable: "--mono" });
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
-  title: site.title,
+  title: { default: site.title, template: "%s · notvenu" },
   description: site.description,
   alternates: { canonical: "/" },
   authors: [{ name: site.name, url: site.url }],
   keywords: ["freelance web developer India", "Next.js developer", "WordPress developer", "SEO", "AEO", "GEO", "custom software", "notvenu"],
-  openGraph: { type: "website", url: "/", siteName: "notvenu", title: site.title, description: site.description },
+  creator: site.name,
+  category: "technology",
+  // Lets Google show big image previews and full-length snippets (AEO).
+  robots: { index: true, follow: true, googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1, "max-video-preview": -1 } },
+  openGraph: { type: "profile", url: "/", siteName: "notvenu", locale: "en_IN", title: site.title, description: site.description, firstName: "Venu", username: site.handle },
   twitter: { card: "summary_large_image", title: site.title, description: site.description },
+  formatDetection: { telephone: false },
 };
 
 export const viewport: Viewport = { themeColor: "#fafaf7" };
 
-// Structured data: who I am, what I sell, and plain-language answers. This is what search and AI engines quote.
+// Site-wide structured data: the site, who I am, what I sell. Page-specific types (ProfilePage, FAQPage, BlogPosting) live on their pages.
 const jsonLd = {
   "@context": "https://schema.org",
   "@graph": [
     {
+      "@type": "WebSite",
+      "@id": `${site.url}/#website`,
+      url: site.url,
+      name: "notvenu",
+      description: site.description,
+      inLanguage: "en-IN",
+      publisher: { "@id": `${site.url}/#person` },
+    },
+    {
       "@type": "Person",
+      description: site.description,
       "@id": `${site.url}/#person`,
       name: site.name,
       alternateName: site.handle,
@@ -45,11 +60,7 @@ const jsonLd = {
       founder: { "@id": `${site.url}/#person` },
       areaServed: "Worldwide",
       serviceType: ["Website development", "Custom software", "SEO", "AEO", "GEO", "Website maintenance"],
-      makesOffer: clients.filter((c) => c.url).map((c) => ({ "@type": "Offer", itemOffered: { "@type": "CreativeWork", name: c.name, url: c.url } })),
-    },
-    {
-      "@type": "FAQPage",
-      mainEntity: faq.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
+      makesOffer: [...clients, ...seo].filter((c) => c.url).map((c) => ({ "@type": "Offer", itemOffered: { "@type": "CreativeWork", name: c.name, url: c.url } })),
     },
   ],
 };

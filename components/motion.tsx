@@ -20,6 +20,7 @@ import {
 import Image from "next/image";
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 import type { Project } from "@/data";
+import { Logo, Tech } from "@/components/logos";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
@@ -122,8 +123,11 @@ export function Intro({ results, shots, portrait }: { results: number; shots: st
                 animate={{ y: 0, rotate: -3 }}
                 transition={{ type: "spring", stiffness: 160, damping: 20 }}
               >
-                <span className="intro-card-name">venu</span>
-                <Image src={portrait} alt="" width={757} height={913} sizes="280px" priority />
+                {/* Contents fade out the moment the morph starts: the layout morph scales the box, and anything inside would stretch with it. */}
+                <motion.div style={{ position: "absolute", inset: 0 }} exit={{ opacity: 0, transition: { duration: 0.12 } }}>
+                  <span className="intro-card-name">venu</span>
+                  <Image src={portrait} alt="" width={757} height={913} sizes="280px" priority />
+                </motion.div>
               </motion.div>
             )}
           </div>
@@ -339,7 +343,7 @@ export function HeroCard({ src, alt, children }: { src: string; alt: string; chi
       {done && (
         <motion.div layoutId="herocard" className="hc-bg" style={{ borderRadius: 36 }} transition={{ duration: 0.9, ease }}>
           <motion.span className="hc-name" aria-hidden style={{ x: nameX, y: nameY }}>
-            <motion.span style={{ display: "block" }} variants={{ hidden: { y: "70%", opacity: 0 }, show: { y: 0, opacity: 1, transition: { duration: 1.1, ease, delay: d + 0.4 } } }}>
+            <motion.span style={{ display: "block" }} variants={{ hidden: { y: "70%", opacity: 0 }, show: { y: 0, opacity: 1, transition: { duration: 1.1, ease, delay: d + 0.55 } } }}>
               venu
             </motion.span>
           </motion.span>
@@ -546,6 +550,7 @@ export function WorkTrack({ items, children }: { items: Project[]; children: Rea
   const track = useRef<HTMLDivElement>(null);
   const [dist, setDist] = useState(0);
   const [wide, setWide] = useState(false);
+  const [open, setOpen] = useState<Project | null>(null);
   useEffect(() => {
     const mq = window.matchMedia("(min-width: 900px)");
     const measure = () => (setWide(mq.matches), setDist(track.current ? track.current.scrollWidth - window.innerWidth : 0));
@@ -566,7 +571,7 @@ export function WorkTrack({ items, children }: { items: Project[]; children: Rea
         <motion.div ref={track} className="track" style={wide ? { x } : undefined}>
           {items.map((p, i) => (
             <article key={p.name} className="panel">
-              <a href={p.url} target="_blank" rel="noopener" className="frame">
+              <button type="button" className="frame" onClick={() => setOpen(p)} aria-label={`${p.name}: open case study`}>
                 <div className="frame-bar">
                   <i /><i /><i />
                   <span className="url"><span aria-hidden>🔒 </span>{p.url!.replace(/^https?:\/\//, "")}</span>
@@ -574,7 +579,7 @@ export function WorkTrack({ items, children }: { items: Project[]; children: Rea
                 <div className="frame-shot">
                   <Image src={p.shot!} alt={`${p.name} homepage`} width={1440} height={900} sizes="(min-width: 900px) 52vw, 100vw" />
                 </div>
-              </a>
+              </button>
               <div className="panel-body">
                 <p className="mono">0{i + 1} — {p.kind}</p>
                 <h3>{p.name}</h3>
@@ -582,26 +587,190 @@ export function WorkTrack({ items, children }: { items: Project[]; children: Rea
                 <ul>
                   {p.did.slice(0, 3).map((d) => <li key={d}>{d}</li>)}
                 </ul>
-                <p className="mono muted">{p.stack.join(" / ")}</p>
+                <p className="mono muted stack">{p.stack.map((s) => <Tech key={s} name={s} mono />)}</p>
+                <button type="button" className="case-link" onClick={() => setOpen(p)}>Read the case study <span aria-hidden>→</span></button>
               </div>
             </article>
           ))}
         </motion.div>
       </div>
+      <CaseStudy project={open} onClose={() => setOpen(null)} />
     </section>
+  );
+}
+
+
+// Seeded PRNG (mulberry32): "random" placement that is identical on server and client, so no hydration mismatch.
+function rng(seed: number) {
+  return () => {
+    seed = (seed + 0x6d2b79f5) | 0;
+    let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+/**
+ * Hand-picked tech logos floating in a section's empty space, like the chips around the portrait; placement is seeded-random.
+ * `box` is [x0, y0, x1, y1] in % of the parent (which must be position: relative); chips are spread vertically
+ * through it so they never stack. Each drifts at its own depth on scroll. Hidden below 1100px where there's no spare room.
+ */
+export function Scatter({ logos, seed, box }: { logos: string[]; seed: number; box: [number, number, number, number] }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
+  const r = rng(seed);
+  const [x0, y0, x1, y1] = box;
+  const count = logos.length;
+  const chips = logos.map((name, i) => ({
+    name,
+    left: x0 + r() * (x1 - x0),
+    top: y0 + ((y1 - y0) * (i + 0.2 + r() * 0.6)) / count,
+    depth: 30 + r() * 70,
+    rotate: (r() - 0.5) * 24,
+    size: 46 + Math.round(r() * 16),
+  }));
+  return (
+    <div ref={ref} className="scatter" aria-hidden>
+      {chips.map((c, i) => <ScatterChip key={c.name} {...c} i={i} progress={scrollYProgress} />)}
+    </div>
+  );
+}
+
+function ScatterChip({ name, left, top, depth, rotate, size, i, progress }: { name: string; left: number; top: number; depth: number; rotate: number; size: number; i: number; progress: MotionValue<number> }) {
+  const y = useTransform(progress, [0, 1], [depth, -depth]);
+  return (
+    <motion.span className="scatter-pos" style={{ left: `${left}%`, top: `${top}%`, y }}>
+      <motion.span
+        className="scatter-chip"
+        style={{ width: size, height: size, rotate }}
+        initial={{ opacity: 0, scale: 0.4 }}
+        whileInView={{ opacity: 1, scale: 1 }}
+        viewport={{ once: true }}
+        transition={{ type: "spring", stiffness: 300, damping: 18, delay: 0.2 + i * 0.12 }}
+      >
+        <motion.span animate={{ y: [0, -8, 0] }} transition={{ duration: 3.2 + i * 0.5, repeat: Infinity, ease: "easeInOut" }} style={{ display: "grid" }}>
+          <Logo name={name} size={Math.round(size * 0.46)} />
+        </motion.span>
+      </motion.span>
+    </motion.span>
   );
 }
 
 const TONES = ["blue", "lime", "ink"];
 
-/** Projects without a URL render as plain rows instead of dead links. */
-function Row({ href, ...rest }: React.HTMLAttributes<HTMLElement> & { href?: string }) {
-  return href ? <a href={href} target="_blank" rel="noopener" {...rest} /> : <div tabIndex={0} {...rest} />;
+/**
+ * A project's case study in a native modal dialog: Esc, focus trap and backdrop come free.
+ * Tapping outside the card closes it too. The page stays put underneath (no route change).
+ */
+export function CaseStudy({ project: p, onClose }: { project: Project | null; onClose: () => void }) {
+  const ref = useRef<HTMLDialogElement>(null);
+  useEffect(() => {
+    const d = ref.current;
+    if (p && d && !d.open) d.showModal();
+  }, [p]);
+  return (
+    <dialog ref={ref} className="case" onClose={onClose} onClick={(e) => e.target === e.currentTarget && ref.current?.close()} aria-labelledby="case-title">
+      {p && (
+        <div className="case-card">
+          <header className="case-head">
+            <div>
+              <p className="mono muted">{p.kind}</p>
+              <h2 id="case-title">{p.name}</h2>
+              <span className={`status ${p.status === "Live" ? "live" : ""}`}>{p.status}</span>
+            </div>
+            <button type="button" className="case-x" onClick={() => ref.current?.close()} aria-label="Close case study">×</button>
+          </header>
+          {p.shot && (
+            <div className="case-shot">
+              <Image src={p.shot} alt={`${p.name} homepage`} width={1440} height={900} sizes="(min-width: 900px) 760px, 100vw" />
+            </div>
+          )}
+          <p className="case-summary">{p.summary}</p>
+          <dl className="case-facts">
+            {p.place && <div><dt className="mono">Where</dt><dd>{p.place}</dd></div>}
+            <div><dt className="mono">Status</dt><dd>{p.status}</dd></div>
+            <div><dt className="mono">Stack</dt><dd className="stack">{p.stack.map((s) => <Tech key={s} name={s} />)}</dd></div>
+          </dl>
+          <section className="case-sec">
+            <h3 className="mono">01 · The brief</h3>
+            <p>{p.brief}</p>
+          </section>
+          <section className="case-sec">
+            <h3 className="mono">02 · What I built</h3>
+            <ul className="case-did">{p.did.map((d) => <li key={d}>{d}</li>)}</ul>
+          </section>
+          {p.tech && (
+            <section className="case-sec">
+              <h3 className="mono">03 · Under the hood</h3>
+              <ul className="case-tech">{p.tech.map((t) => <li key={t}>{t}</li>)}</ul>
+            </section>
+          )}
+          <div className="ctas">
+            {p.url && <a className="btn" href={p.url} target="_blank" rel="noopener">Visit the site <span aria-hidden>↗</span></a>}
+            {p.repo && <a className="btn" href={p.repo} target="_blank" rel="noopener">Code on GitHub <span aria-hidden>↗</span></a>}
+            <a className="btn ghost" href="#contact" onClick={() => ref.current?.close()}>Start something similar</a>
+          </div>
+        </div>
+      )}
+    </dialog>
+  );
+}
+
+const FILTERS = ["All", "Client", "Product", "SEO"] as const;
+
+/** Every project as a card, filterable by kind. A tap opens its case study in place; no extra pages. */
+export function ProjectGrid({ items }: { items: (Project & { group: "Client" | "Product" | "SEO" })[] }) {
+  const [filter, setFilter] = useState<(typeof FILTERS)[number]>("All");
+  const [open, setOpen] = useState<Project | null>(null);
+  const shown = items.filter((p) => filter === "All" || p.group === filter);
+  return (
+    <>
+      <div className="filters" role="group" aria-label="Filter projects">
+        {FILTERS.map((f) => (
+          <button key={f} type="button" aria-pressed={filter === f} onClick={() => setFilter(f)}>
+            {f === "All" ? "All" : f === "SEO" ? "SEO clients" : `${f}s`} <span className="mono">{f === "All" ? items.length : items.filter((p) => p.group === f).length}</span>
+          </button>
+        ))}
+      </div>
+      <motion.ul layout className="pgrid">
+        <AnimatePresence mode="popLayout">
+          {shown.map((p, i) => (
+            <motion.li
+              layout
+              key={p.name + p.group}
+              initial={{ opacity: 0, scale: 0.96 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.96 }}
+              transition={{ duration: 0.35, ease }}
+            >
+              <button type="button" className="pcard" onClick={() => setOpen(p)}>
+                <span className={`pcard-media ${p.shot ? "" : TONES[i % 3]}`}>
+                  {p.shot ? <Image src={p.shot} alt="" width={720} height={450} sizes="(min-width: 1100px) 33vw, (min-width: 700px) 50vw, 100vw" /> : <b>{p.name}</b>}
+                </span>
+                <span className="pcard-body">
+                  <span className="pcard-top">
+                    <span className="mono muted">{p.group === "SEO" ? "SEO client" : p.group} · {p.kind}</span>
+                    <span className={`status ${p.status === "Live" ? "live" : ""}`}>{p.status}</span>
+                  </span>
+                  <span className="pcard-name">{p.name}</span>
+                  <span className="muted">{p.summary}</span>
+                  <span className="pcard-stack">{p.stack.map((s) => <Tech key={s} name={s} />)}</span>
+                  <span className="pcard-cta">Read the case study <span aria-hidden>→</span></span>
+                </span>
+              </button>
+            </motion.li>
+          ))}
+        </AnimatePresence>
+      </motion.ul>
+      <CaseStudy project={open} onClose={() => setOpen(null)} />
+    </>
+  );
 }
 
 /** Index of smaller projects; hovering a row floats a preview that trails the cursor. */
 export function HoverList({ items }: { items: (Project & { group: string })[] }) {
   const [active, setActive] = useState<number | null>(null);
+  const [open, setOpen] = useState<Project | null>(null);
   const x = useSpring(0, { stiffness: 300, damping: 30 });
   const y = useSpring(0, { stiffness: 300, damping: 30 });
   const p = active === null ? null : items[active];
@@ -609,8 +778,9 @@ export function HoverList({ items }: { items: (Project & { group: string })[] })
     <div className="hlist" onPointerMove={(e) => (x.set(e.clientX), y.set(e.clientY))} onPointerLeave={() => setActive(null)}>
       {items.map((it, i) => (
         <FadeUp key={it.name} delay={i * 0.05}>
-          <Row
-            href={it.url}
+          <button
+            type="button"
+            onClick={() => setOpen(it)}
             className="hrow"
             onPointerEnter={() => setActive(i)}
             onFocus={() => setActive(i)}
@@ -620,8 +790,8 @@ export function HoverList({ items }: { items: (Project & { group: string })[] })
             <span className="hname">{it.name}</span>
             <span className="hkind">{it.kind}</span>
             <span className={`status ${it.status === "Live" ? "live" : ""}`}>{it.status}</span>
-            <span className="harrow" aria-hidden>{it.url ? "↗" : ""}</span>
-          </Row>
+            <span className="harrow" aria-hidden>+</span>
+          </button>
         </FadeUp>
       ))}
       <motion.div className="preview" style={{ x, y }} aria-hidden>
@@ -640,6 +810,7 @@ export function HoverList({ items }: { items: (Project & { group: string })[] })
           )}
         </AnimatePresence>
       </motion.div>
+      <CaseStudy project={open} onClose={() => setOpen(null)} />
     </div>
   );
 }
