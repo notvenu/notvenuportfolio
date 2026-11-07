@@ -9,7 +9,7 @@ export default function NotFound() {
   return (
     <main className="wrap nf">
       <a href="/" className="logo" aria-label="notvenu, home">
-        <LogoMark size={30} caretClass="mark-caret" /> notvenu
+        <LogoMark size={32} /> notvenu
       </a>
       <div>
         <p className="mono muted">Error 404 · 0 results</p>

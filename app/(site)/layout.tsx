@@ -17,7 +17,7 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
       <ScrollProgress />
       <Nav>
         <Link href="/" className="logo" aria-label="notvenu, home">
-          <LogoMark size={30} caretClass="mark-caret" /> notvenu
+          <LogoMark size={32} /> notvenu
         </Link>
         <nav aria-label="Main">
           {pages.map((p) => <Link key={p.href} href={p.href}>{p.label}</Link>)}
